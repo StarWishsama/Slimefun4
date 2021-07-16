@@ -5,7 +5,7 @@ name: Slimefun 自动构建
 
 on:
   push:
-    branches: [ master ]
+    branches: [ release ]
 
 jobs:
   build:
