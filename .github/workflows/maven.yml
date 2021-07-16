@@ -29,3 +29,12 @@ jobs:
       with:
         name: Slimefun.jar
         path: staging
+    - name: Automatic Releases
+      uses: marvinpinto/action-automatic-releases@v1.2.1
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        automatic_release_tag: "exp"
+        prerelease: true
+        title: "Slimefun 自动构建版本"
+        files: |
+          *.jar
