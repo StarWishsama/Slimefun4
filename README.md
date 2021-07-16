@@ -54,7 +54,7 @@ Slimefun 4 可以在 Releases 页面下 **免费下载**.<br>
 
 | | 开发版 (最新更新) | "稳定版" |
 | ------------------ | -------- | -------- |
-| **支持的 Minecraft 版本** | :video_game: 1.13.X - 1.16.X | :video_game: 1.13.X - 1.16.X |
+| **支持的 Minecraft 版本** | :video_game: 1.13.X - 1.17.X | :video_game: 1.13.X - 1.16.X |
 | **自动更新系统** | :heavy_check_mark: | :heavy_check_mark: |
 | **频繁更新** | :heavy_check_mark: | :x: |
 | **享有最新内容** | :heavy_check_mark: | :x: |
@@ -77,7 +77,7 @@ Slimefun 4 可以在 Releases 页面下 **免费下载**.<br>
 | *截图由 GalaxyKat11#3816 提供* | *截图由 TamThan#7987 提供* | *截图由 Kilaruna#4981 提供* |
 
 ## Discord
-你可以在 Discord 上与 **超过 1800** 个在 Slimefun 社区中来自全世界的用户.<br>
+你可以在 Discord 上与 **超过 6000** 个在 Slimefun 社区中来自全世界的用户.<br>
 单击下面的徽标加入 Discord 服务器反馈问题和提出意见, 或者讨论关于此插件的内容.<br>
 我们经常会举办一些社区活动, 加入我们了解更多.<br>
 **注意**: 我们在 Discord 服务器 **不** 接受任何形式的问题反馈, 请使用我们的 [问题追踪器](https://github.com/StarWishsama/Slimefun4/issues) 反馈问题!
