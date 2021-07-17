@@ -14,7 +14,7 @@
     </branch>
     <branch>
         <pattern>release</pattern>
-        <versionFormat>4.9-dev-${commit.short}</versionFormat>
+        <versionFormat>4.9-exp-${commit.short}</versionFormat>
     </branch>
     <tag>
         <pattern>v([0-9].*)></pattern>
