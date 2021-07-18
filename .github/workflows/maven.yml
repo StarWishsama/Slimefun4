@@ -1,7 +1,7 @@
 # This workflow will build a Java project with Maven
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
 
-name: Slimefun 自动构建
+name: Slimefun 自动发布
 
 on:
   push:
@@ -25,10 +25,6 @@ jobs:
         path: ~/.m2
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2
-    - uses: actions/upload-artifact@v2
-      with:
-        name: Slimefun.jar
-        path: staging
     - name: Automatic Releases
       uses: marvinpinto/action-automatic-releases@v1.2.1
       with:
