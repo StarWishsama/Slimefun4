@@ -1,16 +1,7 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.tools;
 
-import io.github.thebusybiscuit.slimefun4.core.handlers.ToolUseHandler;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
-import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
-import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.AbstractMonsterSpawner;
-import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.BrokenSpawner;
-import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.RepairedSpawner;
-import io.papermc.lib.PaperLib;
-import me.mrCookieSlime.Slimefun.Lists.RecipeType;
-import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.api.BlockStorage;
-import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
+import javax.annotation.Nonnull;
+
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -18,7 +9,20 @@ import org.bukkit.block.CreatureSpawner;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
-import javax.annotation.Nonnull;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemSpawnReason;
+import io.github.thebusybiscuit.slimefun4.core.handlers.ToolUseHandler;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
+import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
+import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.AbstractMonsterSpawner;
+import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.BrokenSpawner;
+import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.RepairedSpawner;
+import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
+import io.papermc.lib.PaperLib;
+
+import me.mrCookieSlime.Slimefun.Lists.RecipeType;
+import me.mrCookieSlime.Slimefun.Objects.Category;
+import me.mrCookieSlime.Slimefun.api.BlockStorage;
+import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 
 /**
  * The {@link PickaxeOfContainment} is a Pickaxe that allows you to break Spawners.
@@ -38,13 +42,13 @@ public class PickaxeOfContainment extends SimpleSlimefunItem<ToolUseHandler> {
     }
 
     @Override
-    public ToolUseHandler getItemHandler() {
+    public @Nonnull ToolUseHandler getItemHandler() {
         return (e, tool, fortune, drops) -> {
             Block b = e.getBlock();
 
             if (b.getType() == Material.SPAWNER) {
                 ItemStack spawner = breakSpawner(b);
-                b.getLocation().getWorld().dropItemNaturally(b.getLocation(), spawner);
+                SlimefunUtils.spawnItem(b.getLocation(), spawner, ItemSpawnReason.BROKEN_SPAWNER_DROP, true);
 
                 e.setExpToDrop(0);
                 e.setDropItems(false);
@@ -52,8 +56,7 @@ public class PickaxeOfContainment extends SimpleSlimefunItem<ToolUseHandler> {
         };
     }
 
-    @Nonnull
-    private ItemStack breakSpawner(@Nonnull Block b) {
+    private @Nonnull ItemStack breakSpawner(@Nonnull Block b) {
         AbstractMonsterSpawner spawner;
 
         /**

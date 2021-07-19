@@ -62,7 +62,7 @@ public final class LoreBuilder {
     }
 
     public static @Nonnull String hunger(double value) {
-        return "&7&o恢复 &b&o" + hungerFormat.format(value) + " &7&o的饥饿值";
+        return "&7&o恢复 &b&o" + hungerFormat.format(value) + " &7&o点饥饿值";
     }
 
     public static @Nonnull String range(int blocks) {

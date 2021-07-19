@@ -1,20 +1,5 @@
 package io.github.thebusybiscuit.slimefun4.implementation.items.altar;
 
-import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
-import io.github.thebusybiscuit.cscorelib2.inventory.ItemUtils;
-import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
-import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
-import io.github.thebusybiscuit.slimefun4.core.handlers.BlockDispenseHandler;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
-import io.github.thebusybiscuit.slimefun4.implementation.handlers.SimpleBlockBreakHandler;
-import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
-import io.github.thebusybiscuit.slimefun4.implementation.listeners.AncientAltarListener;
-import io.github.thebusybiscuit.slimefun4.implementation.tasks.AncientAltarTask;
-import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
-import me.mrCookieSlime.Slimefun.Lists.RecipeType;
-import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -31,6 +16,22 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
+
+import io.github.thebusybiscuit.cscorelib2.chat.ChatColors;
+import io.github.thebusybiscuit.cscorelib2.inventory.ItemUtils;
+import io.github.thebusybiscuit.cscorelib2.item.CustomItem;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemSpawnReason;
+import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
+import io.github.thebusybiscuit.slimefun4.core.handlers.BlockDispenseHandler;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.implementation.handlers.SimpleBlockBreakHandler;
+import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
+import io.github.thebusybiscuit.slimefun4.implementation.listeners.AncientAltarListener;
+import io.github.thebusybiscuit.slimefun4.implementation.tasks.AncientAltarTask;
+import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
+import me.mrCookieSlime.Slimefun.Lists.RecipeType;
+import me.mrCookieSlime.Slimefun.Objects.Category;
+import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 
 /**
  * The {@link AncientPedestal} is a part of the {@link AncientAltar}.
@@ -56,8 +57,7 @@ public class AncientPedestal extends SimpleSlimefunItem<BlockDispenseHandler> {
         addItemHandler(onBreak());
     }
 
-    @Nonnull
-    private BlockBreakHandler onBreak() {
+    private @Nonnull BlockBreakHandler onBreak() {
         return new SimpleBlockBreakHandler() {
             @Override
             public void onBlockBreak(@Nonnull Block b) {
@@ -75,12 +75,12 @@ public class AncientPedestal extends SimpleSlimefunItem<BlockDispenseHandler> {
     }
 
     @Override
-    public BlockDispenseHandler getItemHandler() {
+    public @Nonnull BlockDispenseHandler getItemHandler() {
         return (e, d, block, machine) -> e.setCancelled(true);
     }
 
 
-    public Optional<Item> getPlacedItem(Block pedestal) {
+    public @Nonnull Optional<Item> getPlacedItem(Block pedestal) {
         Location l = pedestal.getLocation().add(0.5, 1.2, 0.5);
 
         for (Entity n : l.getWorld().getNearbyEntities(l, 0.5, 0.5, 0.5, this::testItem)) {
@@ -103,8 +103,7 @@ public class AncientPedestal extends SimpleSlimefunItem<BlockDispenseHandler> {
         }
     }
 
-    @Nonnull
-    public ItemStack getOriginalItemStack(Item item) {
+    public @Nonnull ItemStack getOriginalItemStack(Item item) {
         ItemStack stack = item.getItemStack().clone();
         String customName = item.getCustomName();
 
@@ -138,12 +137,15 @@ public class AncientPedestal extends SimpleSlimefunItem<BlockDispenseHandler> {
             ItemUtils.consumeItem(hand, false);
         }
 
-        Item entity = b.getWorld().dropItem(b.getLocation().add(0.5, 1.2, 0.5), displayItem);
-        entity.setVelocity(new Vector(0, 0.1, 0));
-        entity.setCustomNameVisible(true);
-        entity.setCustomName(nametag);
-        SlimefunUtils.markAsNoPickup(entity, "altar_item");
-        p.playSound(b.getLocation(), Sound.ENTITY_ITEM_PICKUP, 0.3F, 0.3F);
+        Item entity = SlimefunUtils.spawnItem(b.getLocation().add(0.5, 1.2, 0.5), displayItem, ItemSpawnReason.ANCIENT_PEDESTAL_PLACE_ITEM);
+
+        if (entity != null) {
+            entity.setVelocity(new Vector(0, 0.1, 0));
+            entity.setCustomNameVisible(true);
+            entity.setCustomName(nametag);
+            SlimefunUtils.markAsNoPickup(entity, "altar_item");
+            p.playSound(b.getLocation(), Sound.ENTITY_ITEM_PICKUP, 0.3F, 0.3F);
+        }
     }
 
 }
