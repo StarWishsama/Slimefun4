@@ -13,8 +13,8 @@ import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
+import me.mrCookieSlime.Slimefun.api.inventory.DirtyChestMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -58,6 +58,7 @@ public class SlimefunItemInteractListener implements Listener {
             // We especially don't want to open inventories as that can cause duplication
             if (e.getClickedBlock() != null
                     && StorageCacheUtils.hasBlock(e.getClickedBlock().getLocation())
+                    && StorageCacheUtils.hasUniversalBlock(e.getClickedBlock().getLocation())
                     && StorageCacheUtils.getBlock(e.getClickedBlock().getLocation())
                             .isPendingRemove()) {
                 e.setCancelled(true);
@@ -148,6 +149,12 @@ public class SlimefunItemInteractListener implements Listener {
 
                 var blockData = StorageCacheUtils.getBlock(clickedBlock.getLocation());
                 if (blockData == null) {
+                    var uniMenu = StorageCacheUtils.getUniversalMenu(clickedBlock);
+
+                    if (uniMenu != null) {
+                        openMenu(uniMenu, clickedBlock, p);
+                    }
+
                     return;
                 }
 
@@ -178,7 +185,7 @@ public class SlimefunItemInteractListener implements Listener {
         }
     }
 
-    private void openMenu(BlockMenu menu, Block b, Player p) {
+    private void openMenu(DirtyChestMenu menu, Block b, Player p) {
         if (menu != null) {
             if (menu.canOpen(b, p)) {
                 menu.open(p);

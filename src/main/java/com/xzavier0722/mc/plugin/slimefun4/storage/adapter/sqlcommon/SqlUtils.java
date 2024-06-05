@@ -14,6 +14,7 @@ import static com.xzavier0722.mc.plugin.slimefun4.storage.adapter.sqlcommon.SqlC
 import static com.xzavier0722.mc.plugin.slimefun4.storage.adapter.sqlcommon.SqlConstants.FIELD_PLAYER_UUID;
 import static com.xzavier0722.mc.plugin.slimefun4.storage.adapter.sqlcommon.SqlConstants.FIELD_RESEARCH_KEY;
 import static com.xzavier0722.mc.plugin.slimefun4.storage.adapter.sqlcommon.SqlConstants.FIELD_SLIMEFUN_ID;
+import static com.xzavier0722.mc.plugin.slimefun4.storage.adapter.sqlcommon.SqlConstants.FIELD_UNIVERSAL_UUID;
 import static com.xzavier0722.mc.plugin.slimefun4.storage.adapter.sqlcommon.SqlConstants.TABLE_NAME_BACKPACK;
 import static com.xzavier0722.mc.plugin.slimefun4.storage.adapter.sqlcommon.SqlConstants.TABLE_NAME_BACKPACK_INVENTORY;
 import static com.xzavier0722.mc.plugin.slimefun4.storage.adapter.sqlcommon.SqlConstants.TABLE_NAME_BLOCK_DATA;
@@ -22,6 +23,9 @@ import static com.xzavier0722.mc.plugin.slimefun4.storage.adapter.sqlcommon.SqlC
 import static com.xzavier0722.mc.plugin.slimefun4.storage.adapter.sqlcommon.SqlConstants.TABLE_NAME_CHUNK_DATA;
 import static com.xzavier0722.mc.plugin.slimefun4.storage.adapter.sqlcommon.SqlConstants.TABLE_NAME_PLAYER_PROFILE;
 import static com.xzavier0722.mc.plugin.slimefun4.storage.adapter.sqlcommon.SqlConstants.TABLE_NAME_PLAYER_RESEARCH;
+import static com.xzavier0722.mc.plugin.slimefun4.storage.adapter.sqlcommon.SqlConstants.TABLE_NAME_UNIVERSAL_DATA;
+import static com.xzavier0722.mc.plugin.slimefun4.storage.adapter.sqlcommon.SqlConstants.TABLE_NAME_UNIVERSAL_INVENTORY;
+import static com.xzavier0722.mc.plugin.slimefun4.storage.adapter.sqlcommon.SqlConstants.TABLE_NAME_UNIVERSAL_RECORD;
 
 import com.xzavier0722.mc.plugin.slimefun4.storage.common.DataScope;
 import com.xzavier0722.mc.plugin.slimefun4.storage.common.FieldKey;
@@ -58,6 +62,7 @@ public class SqlUtils {
         fieldMap.put(FieldKey.SLIMEFUN_ID, FIELD_SLIMEFUN_ID);
         fieldMap.put(FieldKey.DATA_KEY, FIELD_DATA_KEY);
         fieldMap.put(FieldKey.DATA_VALUE, FIELD_DATA_VALUE);
+        fieldMap.put(FieldKey.UNIVERSAL_UUID, FIELD_UNIVERSAL_UUID);
         mapper = new FieldMapper<>(fieldMap);
     }
 
@@ -71,6 +76,9 @@ public class SqlUtils {
             case BLOCK_DATA -> TABLE_NAME_BLOCK_DATA;
             case CHUNK_DATA -> TABLE_NAME_CHUNK_DATA;
             case BLOCK_INVENTORY -> TABLE_NAME_BLOCK_INVENTORY;
+            case UNIVERSAL_INVENTORY -> TABLE_NAME_UNIVERSAL_INVENTORY;
+            case UNIVERSAL_RECORD -> TABLE_NAME_UNIVERSAL_RECORD;
+            case UNIVERSAL_DATA -> TABLE_NAME_UNIVERSAL_DATA;
             case NONE -> throw new IllegalArgumentException("NONE cannot be a storage data scope!");
         };
     }

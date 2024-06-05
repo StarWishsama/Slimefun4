@@ -2,15 +2,20 @@ package com.xzavier0722.mc.plugin.slimefun4.storage.util;
 
 import com.google.common.base.Preconditions;
 import com.xzavier0722.mc.plugin.slimefun4.storage.callback.IAsyncReadCallback;
+import com.xzavier0722.mc.plugin.slimefun4.storage.controller.ASlimefunDataContainer;
 import com.xzavier0722.mc.plugin.slimefun4.storage.controller.SlimefunBlockData;
+import com.xzavier0722.mc.plugin.slimefun4.storage.controller.SlimefunUniversalData;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
+import me.mrCookieSlime.Slimefun.api.inventory.UniversalMenu;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 
 /**
  * Utils to access the cached block data.
@@ -19,11 +24,16 @@ import org.bukkit.Location;
  * {@link com.xzavier0722.mc.plugin.slimefun4.storage.controller.BlockDataController#getBlockData}
  */
 public class StorageCacheUtils {
-    private static final Set<SlimefunBlockData> loadingData = new HashSet<>();
+    private static final Set<ASlimefunDataContainer> loadingData = new HashSet<>();
 
     @ParametersAreNonnullByDefault
     public static boolean hasBlock(Location l) {
         return getBlock(l) != null;
+    }
+
+    @ParametersAreNonnullByDefault
+    public static boolean hasUniversalBlock(Location l) {
+        return Slimefun.getBlockDataService().getUniversalDataUUID(l.getBlock()).isPresent();
     }
 
     @ParametersAreNonnullByDefault
@@ -77,30 +87,89 @@ public class StorageCacheUtils {
         return blockData.getBlockMenu();
     }
 
-    public static void requestLoad(SlimefunBlockData blockData) {
-        if (blockData.isDataLoaded()) {
+    @ParametersAreNonnullByDefault
+    @Nullable public static SlimefunUniversalData getUniversalData(UUID uuid, Location l) {
+        var uniData = Slimefun.getDatabaseManager().getBlockDataController().getUniversalDataFromCache(uuid);
+
+        if (uniData == null) {
+            return null;
+        }
+
+        if (!uniData.isDataLoaded()) {
+            requestLoad(uniData);
+            return null;
+        }
+
+        return uniData;
+    }
+
+    @ParametersAreNonnullByDefault
+    @Nullable public static SlimefunUniversalData getUniversalData(Block block) {
+        var uuid = Slimefun.getBlockDataService().getUniversalDataUUID(block);
+
+        return uuid.map(uniId -> getUniversalData(uniId, block.getLocation())).orElse(null);
+    }
+
+    @ParametersAreNonnullByDefault
+    @Nullable public static UniversalMenu getUniversalMenu(Block block) {
+        var uuid = Slimefun.getBlockDataService().getUniversalDataUUID(block);
+
+        return uuid.map(uniId -> getUniversalMenu(uniId, block.getLocation())).orElse(null);
+    }
+
+    @ParametersAreNonnullByDefault
+    @Nullable public static UniversalMenu getUniversalMenu(UUID uuid, Location l) {
+        var uniData = Slimefun.getDatabaseManager().getBlockDataController().getUniversalDataFromCache(uuid);
+
+        if (uniData == null) {
+            return null;
+        }
+
+        if (!uniData.isDataLoaded()) {
+            requestLoad(uniData);
+            return null;
+        }
+
+        uniData.setLastPresent(l);
+
+        return uniData.getUniversalMenu();
+    }
+
+    public static void requestLoad(ASlimefunDataContainer data) {
+        if (data.isDataLoaded()) {
             return;
         }
 
-        if (loadingData.contains(blockData)) {
+        if (loadingData.contains(data)) {
             return;
         }
 
         synchronized (loadingData) {
-            if (loadingData.contains(blockData)) {
+            if (loadingData.contains(data)) {
                 return;
             }
-            loadingData.add(blockData);
+            loadingData.add(data);
         }
 
-        Slimefun.getDatabaseManager()
-                .getBlockDataController()
-                .loadBlockDataAsync(blockData, new IAsyncReadCallback<>() {
-                    @Override
-                    public void onResult(SlimefunBlockData result) {
-                        loadingData.remove(blockData);
-                    }
-                });
+        if (data instanceof SlimefunBlockData blockData) {
+            Slimefun.getDatabaseManager()
+                    .getBlockDataController()
+                    .loadBlockDataAsync(blockData, new IAsyncReadCallback<>() {
+                        @Override
+                        public void onResult(SlimefunBlockData result) {
+                            loadingData.remove(data);
+                        }
+                    });
+        } else if (data instanceof SlimefunUniversalData uniData) {
+            Slimefun.getDatabaseManager()
+                    .getBlockDataController()
+                    .loadUniversalDataAsync(uniData, new IAsyncReadCallback<>() {
+                        @Override
+                        public void onResult(SlimefunUniversalData result) {
+                            loadingData.remove(data);
+                        }
+                    });
+        }
     }
 
     public static void executeAfterLoad(SlimefunBlockData data, Runnable execute, boolean runOnMainThread) {
