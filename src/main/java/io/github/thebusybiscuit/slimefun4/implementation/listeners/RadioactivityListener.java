@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 
 /**
  * {@link RadioactivityListener} handles radioactivity level resets
@@ -24,5 +25,11 @@ public class RadioactivityListener implements Listener {
     public void onPlayerDeath(@Nonnull PlayerDeathEvent e) {
         RadiationUtils.clearExposure(e.getEntity());
         RadiationTask.addGracePeriod(e.getEntity());
+    }
+
+    @EventHandler
+    public void onPlayerJoin(@Nonnull PlayerJoinEvent e) {
+        RadiationUtils.clearExposure(e.getPlayer());
+        RadiationTask.addGracePeriod(e.getPlayer());
     }
 }
